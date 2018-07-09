@@ -1,0 +1,55 @@
+<?php namespace App\Http\Controllers;
+use Illuminate\Database\Eloquent\Model;
+use DB;
+use App\Models\Project;
+use App\Models\Project_Task;
+use App\Models\Funds;
+use Input,Redirect,Auth;
+
+class FundsController extends Controller {
+
+	/*
+	|--------------------------------------------------------------------------
+	| Project Controller
+	|--------------------------------------------------------------------------
+	|
+	| This controller renders your application's "dashboard" for users that
+	| are authenticated. Of course, you are free to change or remove the
+	| controller as you wish. It is just here to get your app started!
+	|
+	*/
+
+	/**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
+
+	/**
+	 * Show the application dashboard to the user.
+	 *
+	 * @return Response
+	 */
+
+  public function add(){
+    //dd($_POST);
+    $funds=new Funds;
+    $funds->project_id=$_POST['project_id'];
+    $funds->funds_name=$_POST['funds_name'];
+    $funds->funds_money=$_POST['funds_money'];
+    $funds->create_user=Auth::user()->name;
+    $funds->save();
+    return Redirect::to('/project/'.$_POST['project_id']);
+  }
+	public function index()
+	{
+		$funds=Funds::paginate(10);
+		return view('funds.index')->withFunds($funds);
+	}
+
+
+}

@@ -1,0 +1,57 @@
+<?php namespace App\Http\Controllers;
+use Illuminate\Database\Eloquent\Model;
+use DB;
+use App\Models\Project;
+use App\Models\Project_Task;
+use Input,Redirect,Auth;
+class TaskController extends Controller {
+
+	/*
+	|--------------------------------------------------------------------------
+	| Project Controller
+	|--------------------------------------------------------------------------
+	|
+	| This controller renders your application's "dashboard" for users that
+	| are authenticated. Of course, you are free to change or remove the
+	| controller as you wish. It is just here to get your app started!
+	|
+	*/
+
+	/**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
+
+	/**
+	 * Show the application dashboard to the user.
+	 *
+	 * @return Response
+	 */
+	public function detail()
+	{
+		return view('task.detail');
+	}
+  public function create_index($id)
+  {
+		$data=Project::where('id','=',$id)->first();
+    return view('task.create_index')->withData($data);
+
+  }
+	public function create()
+	{
+		//dd($_POST);
+		$task=new Project_Task;
+		$task->project_id=$_POST['project_id'];
+		$task->task_name=$_POST['task_name'];
+		$task->create_user=$_POST['create_user'];
+		$task->task_desction=$_POST['task_desction'];
+		$task->save();
+		return Redirect::to('/project/'.$_POST['project_id']);
+	}
+
+}

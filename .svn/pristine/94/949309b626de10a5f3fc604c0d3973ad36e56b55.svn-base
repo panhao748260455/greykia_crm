@@ -1,0 +1,127 @@
+<?php $__env->startSection('content'); ?>
+
+<!-- begin #content -->
+<div id="content" class="content">
+    <!-- begin breadcrumb -->
+    <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Home</a></li>
+        <li><a href="javascript:;">Dashboard</a></li>
+        <li class="active">Dashboard v2</li>
+    </ol>
+    <!-- end breadcrumb -->
+    <!-- begin page-header -->
+    <h1 class="page-header">
+        项目进度总览 <small>header small text goes here...</small></h1>
+    <!-- end page-header -->
+    <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $v): $__env->incrementLoopIndices(); $loop = $__env->getFirstLoop(); ?>
+    <?php
+    $f=App\Models\Funds::where('project_id','=',$v->id)->get();
+      $sum=0;
+      foreach($f as $k=>$vv){
+        if($k==0){
+          $sum=$vv->funds_money;
+        }else{
+          $sum +=$vv->funds_money;
+        }
+      }
+     ?>
+    <!-- begin row -->
+    <div class="row">
+        <!-- begin col-3 -->
+        <div class="col-md-12 col-sm-6">
+            <div class="widget widget-stats bg-purple">
+                <div class="stats-icon stats-icon-lg">
+                    <a class="accordion-toggle accordion-toggle-styled" data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo e($v->id); ?>">
+  									    <i class="fa fa-plus-circle pull-right" style="color:white"></i>
+
+  									</a>
+                </div>
+                <div class="stats-title">
+                    <a href="/project/<?php echo e($v->id); ?>" style="color:white"><?php echo e($v->project_name); ?></a></div>
+                <div class="stats-number">
+                    经费：<?php echo e($sum); ?></div>
+                <div class="stats-progress progress">
+                    <div class="progress-bar" style="width: 70.1%;">
+                    </div>
+                </div>
+                <div class="stats-desc">
+                    完成进度 (70.1%)</div>
+                    <div id="collapse<?php echo e($v->id); ?>" class="panel-collapse collapse in">
+      								<div class="panel-body">
+                            <!--begin box-->
+                		        <!-- begin vertical-box-column -->
+                		            <!-- begin list-email -->
+                                    <ul class="list-group list-group-lg no-radius list-email">
+                                      <?php $__currentLoopData = App\Models\Project_Task::where('project_id','=',$v->id)->get(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $t): $__env->incrementLoopIndices(); $loop = $__env->getFirstLoop(); ?>
+                                        <li class="list-group-item inverse" style="background-color:
+                                        <?php if($t->status=='1'): ?>
+                                        #b0ebca
+                                        <?php elseif($t->status=='0'): ?>
+                                        #f8b2b2
+                                        <?php endif; ?>
+                                        ">
+                                        <?php
+                                        $role=App\Models\User::where('name','=',$t->create_user)->first()->role;
+                                         ?>
+                                            <a href="email_detail.html" class="email-user">
+                                                <img src="assets/img/user-14.jpg" alt="" />
+                                            </a>
+                                            <div class="email-info">
+                                                <span class="email-time" style="color:#707478"><?php echo e($t->created_at); ?></span>
+                                                <h5 class="email-title">
+                                                    <a href="/task/detail/<?php echo e($t->id); ?>"><?php echo e($t->task_name); ?></a>
+                                                    <span
+                                                    <?php if($role=='client'): ?>
+                                                    class="label label-danger f-s-10"
+                                                    <?php elseif($role=='sponsorer'): ?>
+                                                    class="label label-warning f-s-10"
+                                                    <?php else: ?>
+                                                    class="label label-inverse f-s-10"
+                                                    <?php endif; ?>
+                                                     ><?php echo e($role); ?></span>
+                                                </h5>
+                                                <p class="email-desc" style="color:#707478">
+                                                  <?php echo e($t->task_desction); ?>
+
+                                                </p>
+
+                                            </div>
+                                        </li>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getFirstLoop(); ?>
+                                    </ul>
+                		            <!-- end list-email -->
+                		            <!-- begin wrapper -->
+                                    <div class="wrapper bg-silver-lighter clearfix">
+                                        <div class="btn-group pull-right">
+                                            <button class="btn btn-white btn-sm">
+                                                <i class="fa fa-chevron-left"></i>
+                                            </button>
+                                            <button class="btn btn-white btn-sm">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                        <div class="m-t-5" style="color:#707478"><?php echo e(App\Models\Project_Task::where('project_id','=',$v->id)->count()); ?> messages</div>
+
+                		            <!-- end wrapper -->
+                		        </div>
+                		        <!-- end vertical-box-column -->
+                		    </div>
+                        <!--end box-->
+      								</div>
+      							</div>
+            </div>
+        </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getFirstLoop(); ?>
+        <!-- end col-3 -->
+
+
+
+
+</div>
+<!-- end #content -->
+
+
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

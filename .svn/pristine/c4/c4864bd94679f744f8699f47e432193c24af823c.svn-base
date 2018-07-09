@@ -1,0 +1,100 @@
+<?php namespace App\Http\Controllers;
+use Illuminate\Database\Eloquent\Model;
+use DB;
+use App\Models\Project;
+use App\Models\Project_Task;
+use App\Models\Funds;
+use App\Models\Task_attr;
+use App\Models\Project_Task_attr;
+use Input,Redirect,Auth;
+class TaskController extends Controller {
+
+	/*
+	|--------------------------------------------------------------------------
+	| Project Controller
+	|--------------------------------------------------------------------------
+	|
+	| This controller renders your application's "dashboard" for users that
+	| are authenticated. Of course, you are free to change or remove the
+	| controller as you wish. It is just here to get your app started!
+	|
+	*/
+
+	/**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
+
+	/**
+	 * Show the application dashboard to the user.
+	 *
+	 * @return Response
+	 */
+	public function detail($id)
+	{
+		$data=Project_Task::where('id','=',$id)->first();
+		return view('task.detail')->withData($data);
+	}
+  public function create_index($id)
+  {
+		$data=Project::where('id','=',$id)->first();
+    return view('task.create_index')->withData($data);
+
+  }
+	public function create()
+	{
+		//dd($_POST);
+		$task=new Project_Task;
+		$task->project_id=$_POST['project_id'];
+		$task->task_name=$_POST['task_name'];
+		$task->create_user=$_POST['create_user'];
+		$task->task_desction=$_POST['task_desction'];
+		$task->exec_user=$_POST['exec_user'];
+		$task->task_type=$_POST['task_type'];
+		$task->start_time=$_POST['start_time'];
+		$task->end_time=$_POST['end_time'];
+		$task->save();
+		$attr=Project_Task_attr::where('project_id','=',$_POST['project_id'])->where('task_type','=',$_POST['task_type'])->first();
+		if(!$attr)
+		$attr=new Project_Task_attr;
+		$attr->project_id=$_POST['project_id'];
+		$attr->task_type=$_POST['task_type'];
+		$attr->num+=1;
+		$attr->save();
+		return Redirect::to('/project/'.$_POST['project_id']);
+	}
+	public function complete($id)
+	{
+		$project_id=Project_Task::where('id','=',$id)->first();
+		Project_Task::where('id','=',$id)->update(['status'=>1,'action_time'=>date("Y-m-d H-i-s")]);
+		$attr=Project_Task_attr::where('project_id','=',$project_id->project_id)->where('task_type','=',$project_id->task_type)->first();
+		$num=$attr->num-1;
+		Project_Task_attr::where('project_id','=',$project_id->project_id)->where('task_type','=',$project_id->task_type)->update(['num'=>$num]);
+		return Redirect::to('/project/'.$project_id->project_id);
+	}
+	public function cancle($id)
+	{
+		$project_id=Project_Task::where('id','=',$id)->first();
+		Project_Task::where('id','=',$id)->update(['status'=>0]);
+		$attr=Project_Task_attr::where('project_id','=',$project_id->project_id)->where('task_type','=',$project_id->task_type)->first();
+		$num=$attr->num-1;
+		Project_Task_attr::where('project_id','=',$project_id->project_id)->where('task_type','=',$project_id->task_type)->update(['num'=>$num]);
+		return Redirect::to('/project/'.$project_id->project_id);
+	}
+	public function del($id)
+	{
+		dd($id);
+		// $project_id=Project_Task::where('id','=',$id)->first();
+		// Project_Task::where('id','=',$id)->delete();
+		// $attr=Project_Task_attr::where('project_id','=',$project_id->project_id)->where('task_type','=',$project_id->task_type)->first();
+		// $num=$attr->num-1;
+		// Project_Task_attr::where('project_id','=',$project_id->project_id)->where('task_type','=',$project_id->task_type)->update(['num'=>$num]);
+		// return Redirect::to('/project/'.$project_id->project_id);
+	}
+
+}

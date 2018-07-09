@@ -1,0 +1,75 @@
+<?php namespace App\Http\Controllers;
+use Illuminate\Database\Eloquent\Model;
+use DB;
+use App\Models\Project;
+use App\Models\Project_Task;
+use App\Models\Funds;
+use Input,Redirect,Auth;
+
+class ProjectController extends Controller {
+
+	/*
+	|--------------------------------------------------------------------------
+	| Project Controller
+	|--------------------------------------------------------------------------
+	|
+	| This controller renders your application's "dashboard" for users that
+	| are authenticated. Of course, you are free to change or remove the
+	| controller as you wish. It is just here to get your app started!
+	|
+	*/
+
+	/**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
+
+	/**
+	 * Show the application dashboard to the user.
+	 *
+	 * @return Response
+	 */
+	 public function index_1()
+ 	{
+		$data=Project::all();
+ 		return view('project.index')->withData($data);
+ 	}
+	public function index()
+	{
+		$data=Project::all();
+		return view('project.show')->withData($data);
+	}
+
+  public function create_index()
+  {
+    return view('project.create_index');
+  }
+  public function table($id)
+  {
+		$data=Project::where('id','=',$id)->first();
+		$task=Project_Task::where('project_id','=',$id)->paginate(8);
+		$funds=Funds::where('project_id','=',$id)->get();
+
+    return view('project.table')->withData($data)->withTask($task)->withFunds($funds);
+  }
+	public function create()
+	{
+		//dd($_POST);
+
+		$project=new Project;
+		$project->project_name=$_POST['project_name'];
+		$project->create_user=Auth::user()->name;
+		$project->desction=$_POST['desction'];
+		$project->exec_user=implode(',',$_POST['exec_user']);
+		$project->project_type=$_POST['project_type'];
+		$project->save();
+		return Redirect::to('/');
+
+	}
+
+}

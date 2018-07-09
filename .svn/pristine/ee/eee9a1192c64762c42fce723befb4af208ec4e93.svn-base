@@ -1,0 +1,145 @@
+@extends('layouts.default')
+@section('content')
+
+<!-- begin #content -->
+<div id="content" class="content">
+    <!-- begin breadcrumb -->
+    <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Home</a></li>
+        <li><a href="javascript:;">Dashboard</a></li>
+        <li class="active">Dashboard v2</li>
+    </ol>
+    <!-- end breadcrumb -->
+    <!-- begin page-header -->
+    <h1 class="page-header">
+        项目进度总览 <small>header small text goes here...</small></h1>
+    <!-- end page-header -->
+    @foreach($data as $v)
+    <!-- begin row -->
+    <div class="row">
+        <!-- begin col-3 -->
+        <div class="col-md-12 col-sm-6">
+            <div class="widget widget-stats bg-purple">
+                <div class="stats-icon stats-icon-lg">
+                    <a class="accordion-toggle accordion-toggle-styled" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$v->id}}">
+  									    <i class="fa fa-plus-circle pull-right" style="color:white"></i>
+
+  									</a>
+                </div>
+                <div class="stats-title">
+                    <a href="/project/{{$v->id}}" style="color:white">{{$v->project_name}}</a></div>
+                <div class="stats-number">
+                    经费：7,842,900</div>
+                <div class="stats-progress progress">
+                    <div class="progress-bar" style="width: 70.1%;">
+                    </div>
+                </div>
+                <div class="stats-desc">
+                    完成进度 (70.1%)</div>
+                    <div id="collapse{{$v->id}}" class="panel-collapse collapse in">
+      								<div class="panel-body">
+                            <!--begin box-->
+                		        <!-- begin vertical-box-column -->
+                		            <!-- begin list-email -->
+                                    <ul class="list-group list-group-lg no-radius list-email">
+                                        <li class="list-group-item inverse" style="background-color:#bee2ef">
+                                            <a href="email_detail.html" class="email-user">
+                                                <img src="assets/img/user-14.jpg" alt="" />
+                                            </a>
+                                            <div class="email-info">
+                                                <span class="email-time">Today</span>
+                                                <h5 class="email-title">
+                                                    <a href="/task/detail">任务1</a>
+                                                    <span class="label label-inverse f-s-10">admin</span>
+                                                </h5>
+                                                <p class="email-desc" style="color:#707478">
+                                                    Praesent id pulvinar orci. Donec ac metus non ligula faucibus venenatis. Suspendisse tortor est, placerat eu dui sed...
+                                                </p>
+
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item primary" style="background-color:#f8b2b2">
+                                            <a href="email_detail.html" class="email-user">
+                                                <img src="assets/img/user-13.jpg" alt="" />
+                                            </a>
+                                            <div class="email-info">
+                                                <span class="email-time">
+                                                    2 days ago
+                                                </span>
+                                                <h5 class="email-title">
+                                                    <a href="email_detail.html">任务2</a>
+                                                    <span class="label label-primary f-s-10">designer</span>
+                                                </h5>
+                                                <p class="email-desc" style="color:#707478">Proin interdum aliquam urna, quis lobortis magna tincidunt ac. Integer sed pulvinar neque...
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item success">
+                                            <a href="email_detail.html" class="email-user">
+                                                <img src="assets/img/user-12.jpg" alt="" />
+                                            </a>
+                                            <div class="email-info">
+                                                <span class="email-time">
+                                                    1 week ago
+                                                </span>
+                                                <h5 class="email-title">
+                                                    <a href="email_detail.html">任务3</a>
+                                                    <span class="label label-success f-s-10">staff</span>
+                                                </h5>
+                                                <p class="email-desc" style="color:#707478">
+                                                    Etiam enim ipsum, malesuada in consectetur interdum, malesuada et lacus. Aenean faucibus turpis lorem...
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item inverse">
+                                            <a href="email_detail.html" class="email-user">
+                                                <img src="assets/img/user-10.jpg" alt="" />
+                                            </a>
+                                            <div class="email-info">
+                                                <span class="email-time">
+                                                    2 months ago
+                                                </span>
+                                                <h5 class="email-title">
+                                                    <a href="email_detail.html">任务4</a>
+                                                    <span class="label label-inverse f-s-10">admin</span>
+                                                </h5>
+                                                <p class="email-desc" style="color:#707478">
+                                                    Suspendisse ut urna orci. Vivamus ac diam sollicitudin, consequat mauris id, facilisis ipsum. Nam feugiat nisl a justo...
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                		            <!-- end list-email -->
+                		            <!-- begin wrapper -->
+                                    <div class="wrapper bg-silver-lighter clearfix">
+                                        <div class="btn-group pull-right">
+                                            <button class="btn btn-white btn-sm">
+                                                <i class="fa fa-chevron-left"></i>
+                                            </button>
+                                            <button class="btn btn-white btn-sm">
+                                                <i class="fa fa-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                        <div class="m-t-5" style="color:#707478">1,232 messages</div>
+
+                		            <!-- end wrapper -->
+                		        </div>
+                		        <!-- end vertical-box-column -->
+                		    </div>
+                        <!--end box-->
+      								</div>
+      							</div>
+            </div>
+        </div>
+        @endforeach
+        <!-- end col-3 -->
+
+
+
+
+</div>
+<!-- end #content -->
+
+
+
+@endsection

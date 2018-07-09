@@ -1,0 +1,131 @@
+@extends('layouts.default')
+@section('content')
+
+<!-- begin #content -->
+<div id="content" class="content">
+    <!-- begin breadcrumb -->
+    <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Home</a></li>
+        <li><a href="javascript:;">Dashboard</a></li>
+        <li class="active">Dashboard v2</li>
+    </ol>
+    <!-- end breadcrumb -->
+    <!-- begin page-header -->
+    <h1 class="page-header">
+        项目进度总览 <small>header small text goes here...</small></h1>
+    <!-- end page-header -->
+    @foreach($data as $v)
+    <?php
+    $f=App\Models\Funds::where('project_id','=',$v->id)->get();
+      $sum=0;
+      foreach($f as $k=>$vv){
+        if($k==0){
+          $sum=$vv->funds_money;
+        }else{
+          $sum +=$vv->funds_money;
+        }
+      }
+     ?>
+     <?php
+     $sum=App\Models\Task_attr::where('project_level','=',$v->project_type)->count();
+     $complete=App\Models\Project_Task::where('project_id','=',$v->id)->where('status','=',1)->orderBy('task_type','desc')->first();
+      ?>
+    <!-- begin row -->
+    <div class="row">
+        <!-- begin col-3 -->
+        <div class="col-md-12 col-sm-6">
+            <div class="widget widget-stats bg-purple">
+                <div class="stats-icon stats-icon-lg">
+                    <a class="accordion-toggle accordion-toggle-styled" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$v->id}}">
+  									    <i class="fa fa-plus-circle pull-right" style="color:white"></i>
+
+  									</a>
+                </div>
+                <div class="stats-title">
+                    <a href="/project/{{$v->id}}" style="color:white">{{$v->project_name}}</a></div>
+                    <span>开始日期：{{$v->start_time}}</span>&nbsp;&nbsp;&nbsp;<span>结束日期：{{$v->end_time}}</span>
+                <div class="stats-number">
+                    经费：{{$sum}}</div>
+                <div class="stats-progress progress">
+                    <div class="progress-bar" style="width: {{round(($complete?$complete->task_type:'0')/$sum*100)}}%;">
+                    </div>
+                </div>
+                <div class="stats-desc">
+                    完成进度 ({{round(($complete?$complete->task_type:'0')/$sum*100)}}%)</div>
+                    <div id="collapse{{$v->id}}" class="panel-collapse collapse in">
+      								<div class="panel-body">
+                            <!--begin box-->
+                		        <!-- begin vertical-box-column -->
+                		            <!-- begin list-email -->
+                                    <?php  $tt=App\Models\Project_Task::where('project_id','=',$v->id)->paginate(5)?>
+                                    <ul class="list-group list-group-lg no-radius list-email" id="data-table">
+                                      @foreach($tt as $t)
+                                        <li class="list-group-item inverse" style="background-color:
+                                        @if($t->status=='1')
+                                        #b0ebca
+                                        @elseif($t->status=='0')
+                                        #f8b2b2
+                                        @endif
+                                        ">
+                                        <?php
+                                        $role=App\Models\User::where('name','=',$t->exec_user)->first()->role;
+                                         ?>
+
+                                            <a href="email_detail.html" class="email-user">
+                                                <img src="assets/img/user-14.jpg" alt="" />
+                                            </a>
+                                            <div class="email-info">
+                                                <span class="email-time" style="color:#707478">开始：{{$t->start_time}}</span>
+                                                <h5 class="email-title">
+                                                    <a href="/task/detail/{{$t->id}}">{{$t->task_name}}</a>
+                                                    <span
+                                                    @if($role=='client')
+                                                    class="label label-danger f-s-10"
+                                                    @elseif($role=='sponsorer')
+                                                    class="label label-warning f-s-10"
+                                                    @else
+                                                    class="label label-inverse f-s-10"
+                                                    @endif
+                                                     >{{$t->exec_user}}</span>
+                                                </h5>
+                                                <span class="email-time" style="color:#707478">计划完成：{{$t->end_time}}</span>
+                                                <p class="email-desc" style="color:#707478">
+                                                  {{$t->task_desction}}
+                                                </p>
+
+                                            </div>
+                                        </li>
+
+
+                                        @endforeach
+
+                                    </ul>
+                		            <!-- end list-email -->
+                		            <!-- begin wrapper -->
+                                    <div class="wrapper bg-silver-lighter clearfix">
+                                        <div class="btn-group pull-right">
+                                            {!! $tt->links() !!}
+                                        </div>
+                                        <div class="m-t-5" style="color:#707478">{{App\Models\Project_Task::where('project_id','=',$v->id)->count()}} messages</div>
+
+                		            <!-- end wrapper -->
+                		        </div>
+                		        <!-- end vertical-box-column -->
+                		    </div>
+                        <!--end box-->
+      								</div>
+      							</div>
+            </div>
+        </div>
+        @endforeach
+        <!-- end col-3 -->
+
+
+
+
+</div>
+<!-- end #content -->
+
+
+
+@endsection
